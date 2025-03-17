@@ -21,14 +21,14 @@
             <h2 class="section-title">Digite el nombre de sus amigos</h2>
             <div class="input-wrapper">
                 <input type="text" id="amigo" class="input-name" placeholder="Escribe un nombre">
-                <button class="button-add" onclick="agregarAmigo()">Añadir</button>
+                <button class="button-add" onclick="addAmigo()">Añadir</button>
             </div>
            
             <ul id="listaAmigos" class="name-list" aria-labelledby="listaAmigos" role="list"></ul>
             <ul id="resultado" class="result-list" aria-live="polite"></ul>
 
             <div class="button-container">
-                <button class="button-draw" onclick="sortearAmigo()" aria-label="Sortear amigo secreto">
+                <button class="button-draw" onclick="sugerirAmigo()" aria-label="Sortear amigo secreto">
                     <img src="assets/play_circle_outline.png" alt="Ícono para sortear">
                     Sortear amigo
                 </button>
@@ -36,6 +36,50 @@
         </section>
     </main>
 
-    <script src="app.js" defer></script>
+    <script>
+        let amigos = [];
+        function addAmigo() {
+            const input = document.getElementById("amigo");
+            const nombre = input.value.trim();
+            if (nombre && !amigos.includes(nombre)) {
+                amigos.push(nombre);
+                mostrarLista();
+                input.value = "";  // Limpiar el campo de texto
+            } else {
+                alert("Por favor, ingresa un nombre único de tu amigo.");
+            }
+        }
+
+        function mostrarLista() {
+            const listaAmigos = document.getElementById("listaAmigos");
+            listaAmigos.innerHTML = "";  // Limpiar la lista antes de mostrarla
+            
+            amigos.forEach((amigo) => {
+                const li = document.createElement("li");
+                li.textContent = amigo;
+                listaAmigos.appendChild(li);
+            });
+        }
+
+        function sugerirAmigo() {
+            if (amigos.length < 2) {
+                alert("¡Necesitas al menos dos personas para sugerir!");
+                return;
+            }
+
+            let amigoSugerido = [...amigos];
+            amigoSugerido = amigoSugerido.sort(() => Math.random() - 0.5); 
+            const resultado = document.getElementById("resultado");
+            resultado.innerHTML = "";
+
+            amigos.forEach((amigo, index) => {
+                const li = document.createElement("li");
+                li.textContent = `${amigo} -> ${amigoSugerido[index]}`;
+                resultado.appendChild(li);
+            });
+
+            document.querySelector(".button-draw").disabled = true;  
+        }
+    </script>
 </body>
 </html>
